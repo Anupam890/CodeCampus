@@ -30,11 +30,10 @@ export default function Home() {
           </Button>
         </div>
       </div>
-      <Features/>
+      <Features />
       <InfoZigZag />
-      <Testimonials/>
-      <Footer/>
-
+      <Testimonials />
+      <Footer />
     </>
   );
 }

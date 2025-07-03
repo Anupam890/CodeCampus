@@ -13,35 +13,28 @@ import {
 } from "firebase/auth";
 import { firebaseAuth, googleProvider } from "@/services/firebase";
 import { toast } from "sonner";
+import { useAuth } from "@/context/AuthContext";
 
 const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false);
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const [Loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
+  const { setUser } = useAuth();
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    if (password !== confirmPassword) {
-      setLoading(false);
+    setError("");
 
-      return (
-        toast.error("Passwords do not match") &&
-        setError("Passwords do not match")
-      );
-    }
     if (!fullName || !email || !password) {
+      toast.error("Please fill in all fields");
+      setError("Please fill in all fields");
       setLoading(false);
-      return (
-        toast.error("Please fill in all fields") &&
-        setError("Please fill in all fields")
-      );
+      return;
     }
 
     try {
@@ -54,17 +47,41 @@ const Register = () => {
       await updateProfile(userCredential.user, {
         displayName: fullName,
       });
+
+      const newUser = userCredential.user;
+      setUser({
+        uid: newUser.uid,
+        email: newUser.email,
+        displayName: fullName,
+        photoURL: newUser.photoURL,
+        providerId: newUser.providerData[0]?.providerId || "firebase",
+        phoneNumber: newUser.phoneNumber,
+        emailVerified: newUser.emailVerified,
+      });
+
       toast.success("Account created successfully!");
       setLoading(false);
       router.push("/dashboard");
     } catch (err: any) {
       setError(err.message);
+      setLoading(false);
     }
   };
 
   const handleGoogleSignIn = async () => {
     try {
       const result = await signInWithPopup(firebaseAuth, googleProvider);
+      const googleUser = result.user;
+
+      setUser({
+        uid: googleUser.uid,
+        email: googleUser.email,
+        displayName: googleUser.displayName,
+        photoURL: googleUser.photoURL,
+        providerId: googleUser.providerData[0]?.providerId || "google",
+        phoneNumber: googleUser.phoneNumber,
+        emailVerified: googleUser.emailVerified,
+      });
 
       router.push("/dashboard");
     } catch (err: any) {
@@ -75,9 +92,7 @@ const Register = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-black bg-dot-white/[0.08] px-4 text-white">
       <div className="w-full max-w-sm bg-zinc-900/70 backdrop-blur-md rounded-2xl p-8 shadow-2xl">
-        <h2 className="text-2xl font-bold text-center mb-1">
-          Create an account
-        </h2>
+        <h2 className="text-2xl font-bold text-center mb-1">Create an account</h2>
         <p className="text-sm text-zinc-400 text-center mb-6">
           Enter your information to create your CodeCampus account
         </p>
@@ -122,25 +137,6 @@ const Register = () => {
             </span>
           </div>
 
-          <div className="relative">
-            <label className="block text-sm font-medium mb-1">
-              Confirm Password
-            </label>
-            <Input
-              type={showConfirm ? "text" : "password"}
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              placeholder="••••••••"
-              className="bg-zinc-800 text-white border border-zinc-700 pr-10"
-            />
-            <span
-              onClick={() => setShowConfirm((prev) => !prev)}
-              className="absolute right-3 top-9 cursor-pointer text-zinc-400"
-            >
-              {showConfirm ? <EyeOff size={18} /> : <Eye size={18} />}
-            </span>
-          </div>
-
           {error && <p className="text-red-400 text-sm">{error}</p>}
 
           <Button
@@ -172,23 +168,14 @@ const Register = () => {
             variant="outline"
             className="w-full bg-zinc-800 hover:bg-zinc-700 border border-zinc-600 text-white"
           >
-            {Loading ? (
-              <>
-                <Loader2 className="animate-spin mr-2" size={18} />
-                Signing In...
-              </>
-            ) : (
-              <>
-                <Image
-                  src="https://img.icons8.com/color/48/google-logo.png"
-                  alt="Google"
-                  width={18}
-                  height={18}
-                  className="mr-2"
-                />
-                Continue with Google
-              </>
-            )}
+            <Image
+              src="https://img.icons8.com/color/48/google-logo.png"
+              alt="Google"
+              width={18}
+              height={18}
+              className="mr-2"
+            />
+            Continue with Google
           </Button>
         </form>
 
