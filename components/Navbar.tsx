@@ -12,7 +12,7 @@ const Navbar = () => {
       </div>
       <ul className="hidden md:flex gap-6 text-white font-medium">
         <li>
-          <Link href="/">Features</Link>
+          <Link href="#Platform" id="platform">Features</Link>
         </li>
         <li>
           <Link href="#">How it Works</Link>
