@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import {AuthProvider} from "@/context/AuthContext";
+import { AuthProvider } from "@/context/AuthContext";
 import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = Geist({
@@ -16,7 +16,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "CodeCampus - All in one platform for Students",
-  description: "CodeCampus is an all-in-one platform designed for students to learn, collaborate, and grow their coding skills. Join us to access a wide range of resources, connect with peers, and enhance your programming journey.",
+  description:
+    "CodeCampus is an all-in-one platform designed for students to learn, collaborate, and grow their coding skills. Join us to access a wide range of resources, connect with peers, and enhance your programming journey.",
 };
 
 export default function RootLayout({
@@ -29,9 +30,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-      <AuthProvider>
-          {children}
-      </AuthProvider>
+        <AuthProvider>{children}</AuthProvider>
         <Toaster />
       </body>
     </html>

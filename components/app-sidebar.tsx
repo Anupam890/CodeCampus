@@ -26,8 +26,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       items: [],
     },
     {
-      title: "Jobs",
-      url: "/dashboard/jobs",
+      title: "Job Profiles",
+      url: "/job-posting",
       icon: BookOpen,
       items: [],
     },

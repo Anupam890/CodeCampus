@@ -12,13 +12,13 @@ const Navbar = () => {
       </div>
       <ul className="hidden md:flex gap-6 text-white font-medium">
         <li>
-          <Link href="/">Home</Link>
+          <Link href="/">Features</Link>
         </li>
         <li>
-          <Link href="#">About</Link>
+          <Link href="#">How it Works</Link>
         </li>
         <li>
-          <Link href="#">Contact</Link>
+          <Link href="#">Pricing</Link>
         </li>
       </ul>
       <div className="flex gap-4">
